@@ -1,0 +1,59 @@
+# Graph mapping — defines nodes and edges for the toolkit.
+#
+# This file is editable and names the tables and columns
+# that become the graph. The toolkit reads it and generates generic
+# Delta tables (nodes, edges, node_id_map) from it.
+#
+# Every node_id is deterministic: xxhash64('type::natural_key')
+# so edges resolve by hashing FK columns, no join needed.
+
+# Source catalog and schema (UC Delta tables)
+source_catalog: my_catalog
+source_schema: my_schema
+
+# Node types: a row per type, with its source table, natural key, label, and properties
+nodes:
+  # Example node type (replace with your own)
+  entity_a:
+    source_table: table_a                 # UC table
+    natural_key: id_a                     # Column that uniquely identifies a row
+    label: name_a                         # Column to display as the node label
+    properties: [property_1, property_2]  # Additional columns to include
+    # Optional: properties from other tables of source_schema (at most 8 joins, 16 outputs each).
+    # A one-to-one join copies columns; its key must be unique in the table:
+    # joins:
+    #   - table: table_a_details
+    #     key: id_a                         # the joined table's column equal to natural_key
+    #     columns: [property_4]
+    # An aggregate join: sum | min | max | count | count_distinct over one column. When the
+    # table holds care-subject data, name its folded care-subject column as `subject`: every
+    # output is blank for a node with fewer distinct subjects than the privacy floor.
+    #   - table: events_a
+    #     key: id_a
+    #     subject: subject_id
+    #     aggregates:
+    #       - sum(amount) as total_amount
+    #       - count(event_id) as event_count
+
+  entity_b:
+    source_table: table_b
+    natural_key: id_b
+    label: name_b
+    properties: [property_3]
+
+# Edge types: connect nodes defined above (src_type/dst_type must be node types above)
+edges:
+  # Example edge type (replace with your own)
+  edge_type_1:
+    source_table: junction_table_1  # Table containing the relationship
+    src: fk_to_a                    # Foreign key column to entity_a
+    src_type: entity_a              # Node type on the source side
+    dst: fk_to_b                    # Foreign key column to entity_b
+    dst_type: entity_b              # Node type on the destination side
+
+  edge_type_2:
+    source_table: junction_table_2
+    src: fk_a
+    src_type: entity_a
+    dst: fk_b
+    dst_type: entity_b

@@ -1,0 +1,64 @@
+"""FastAPI app: GET /api/walk, GET /api/set-walk (graphs with walk keys only), GET /api/health,
+and the search page at /. Every walk runs in db.walk_session (a 5 s statement timeout)."""
+
+import os
+from contextlib import asynccontextmanager
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
+
+from . import walk
+from .db import make_pool, walk_session
+
+STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "static")
+
+pool = make_pool()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    pool.open(wait=True)
+    try:
+        yield
+    finally:
+        pool.close()
+
+
+app = FastAPI(title="Graph search", lifespan=lifespan)
+
+
+@app.get("/api/health")
+def health() -> dict:
+    with pool.connection() as conn:
+        role = conn.execute("SELECT current_user").fetchone()[0]
+    return {"status": "ok", "role": role}
+
+
+@app.get("/api/walk")
+def get_walk(start: str = Query(..., min_length=1), type: Optional[str] = None) -> dict:
+    with walk_session(pool) as conn:
+        try:
+            return walk.run_walk(conn, start, type)
+        except walk.StartNotFound as e:
+            raise HTTPException(status_code=404, detail=str(e))
+        except walk.AmbiguousStart as e:
+            raise HTTPException(status_code=409, detail=str(e))
+
+
+if walk.SET_WALK_SQL:  # only a graph whose mapping declares walk keys serves the set walk
+
+    @app.get("/api/set-walk")
+    def get_set_walk(seed_key: str = Query(..., min_length=1), seed_value: str = Query(...),
+                     stop_key: Optional[str] = None, stop_value: Optional[str] = None) -> dict:
+        try:
+            walk.set_walk_query(seed_key, stop_key, stop_value)
+        except walk.BadSetWalk as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        with walk_session(pool) as conn:
+            return walk.run_set_walk(conn, seed_key, seed_value, stop_key, stop_value)
+
+
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse(os.path.join(STATIC, "index.html"))

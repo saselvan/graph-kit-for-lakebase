@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <style>
+      .box { fill: #e8f4f8; stroke: #0066cc; stroke-width: 2; }
+      .label { font-family: sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-family: sans-serif; font-size: 16px; font-weight: bold; text-anchor: middle; }
+      .arrow { fill: none; stroke: #333; stroke-width: 2; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+
+  <text x="400" y="30" class="title">Lakebase Graph Kit Data Flow</text>
+
+  <!-- Input -->
+  <rect x="50" y="80" width="150" height="60" class="box" rx="5"/>
+  <text x="125" y="115" class="label">Unity Catalog</text>
+  <text x="125" y="130" class="label">Schema</text>
+
+  <!-- Processing Steps -->
+  <rect x="300" y="80" width="150" height="60" class="box" rx="5"/>
+  <text x="375" y="110" class="label">Kit Steps:</text>
+  <text x="375" y="130" class="label">profile → build → enrich</text>
+
+  <!-- Lakebase -->
+  <rect x="550" y="80" width="150" height="60" class="box" rx="5"/>
+  <text x="625" y="115" class="label">Lakebase Postgres</text>
+  <text x="625" y="130" class="label">Synced Tables</text>
+
+  <!-- Output/Serving -->
+  <rect x="300" y="220" width="150" height="60" class="box" rx="5"/>
+  <text x="375" y="245" class="label">Served Views</text>
+  <text x="375" y="265" class="label">Graph, Walks, Lookups</text>
+
+  <!-- Users -->
+  <rect x="50" y="220" width="150" height="60" class="box" rx="5"/>
+  <text x="125" y="245" class="label">Applications</text>
+  <text x="125" y="265" class="label">Queries & Traversals</text>
+
+  <rect x="550" y="220" width="150" height="60" class="box" rx="5"/>
+  <text x="625" y="245" class="label">Notebooks</text>
+  <text x="625" y="265" class="label">Analytics</text>
+
+  <!-- Arrows -->
+  <path d="M 200 110 L 300 110" class="arrow"/>
+  <path d="M 450 110 L 550 110" class="arrow"/>
+  <path d="M 375 140 L 375 220" class="arrow"/>
+  <path d="M 200 250 L 300 250" class="arrow"/>
+  <path d="M 450 250 L 550 250" class="arrow"/>
+
+  <!-- Measurement -->
+  <rect x="300" y="360" width="150" height="60" class="box" rx="5"/>
+  <text x="375" y="385" class="label">Measure Step</text>
+  <text x="375" y="405" class="label">Performance Metrics</text>
+
+  <path d="M 375 280 L 375 360" class="arrow"/>
+
+  <!-- Legend -->
+  <text x="50" y="520" class="label" style="text-anchor: start; font-size: 12px;">Steps run sequentially through the runner, with each step reading</text>
+  <text x="50" y="540" class="label" style="text-anchor: start; font-size: 12px;">previous artifacts and writing to the run folder and Lakebase.</text>
+</svg>

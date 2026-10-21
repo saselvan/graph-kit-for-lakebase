@@ -1,0 +1,22 @@
+"""Entry point of the generated graph search app (Databricks Apps runs `python serve.py`).
+
+The root entry is not named app.py: backend/app/ is a package, and app.py would shadow it.
+"""
+
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend"))
+
+from app.main import app  # noqa: E402
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # DATABRICKS_APP_NAME is set by the Apps runtime; locally the app listens on loopback only.
+    in_apps = bool(os.environ.get("DATABRICKS_APP_NAME"))
+    uvicorn.run(
+        app,
+        host="0.0.0.0" if in_apps else "127.0.0.1",
+        port=int(os.environ.get("DATABRICKS_APP_PORT", "8000")),
+    )

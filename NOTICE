@@ -1,0 +1,4 @@
+lakebase-graph-kit
+Copyright 2026 Databricks, Inc.
+
+Third-party material: MONDO. Mondo Disease Ontology (MONDO), © the Monarch Initiative. Source: https://mondo.monarchinitiative.org/ — used under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution and loading implementation: lgk.loaders.mondo.

@@ -1,0 +1,15 @@
+command: ["python", "serve.py"]
+env:
+  - name: PGHOST
+    value: "$pghost"
+  - name: PGPORT
+    value: "5432"
+  - name: PGDATABASE
+    value: "databricks_postgres"
+  # Empty PGUSER: the app logs in as its own service principal (DATABRICKS_CLIENT_ID).
+  - name: PGUSER
+    value: "$pguser"
+  - name: PGSSLMODE
+    value: "require"
+  - name: ENDPOINT_NAME
+    value: "$endpoint_name"

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling==1.32.4"]  # exact: the kit zip must be byte-reproducible (tools/package_kit.py)
+build-backend = "hatchling.build"
+
+[project]
+name = "lgk"
+version = "0.1.0"
+description = "Deterministic Python toolkit for building graphs from Delta tables served by Lakebase"
+requires-python = ">=3.12"
+authors = [{name = "Databricks", email = "engineering@databricks.com"}]
+readme = "README.md"
+license = "Apache-2.0"
+
+dependencies = [
+    "xxhash>=3.4.1",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "pyyaml>=6.0",
+    "psycopg[binary]>=3.1",
+    "databricks-sql-connector>=3.0.0",
+    "databricks-sdk>=0.81.0",  # w.postgres (Lakebase projects); every step imports databricks.sdk; the notebook runner installs the wheel onto an older preinstalled SDK
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-timeout>=2.1.0",
+    "black>=23.10.0",
+    "ruff>=0.1.0",
+    "networkx>=3.2",
+    "scipy>=1.11",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+pythonpath = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lgk"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"notebooks/lgk_runner.py" = "lgk/_notebooks/lgk_runner.py"
+"notebooks/lgk_refresh_task.py" = "lgk/_notebooks/lgk_refresh_task.py"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

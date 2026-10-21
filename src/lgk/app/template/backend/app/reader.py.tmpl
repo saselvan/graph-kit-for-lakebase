@@ -1,0 +1,22 @@
+"""Every pooled connection acts as the `reader` role, read-only.
+
+The app logs in as its own Databricks identity (an OAuth token), then switches to `reader`,
+which can read the served views and nothing else. If the switch does not take, the
+connection is refused: a session that is not `reader` never serves a query.
+"""
+
+READER_ROLE = "reader"
+
+
+class NotReaderError(RuntimeError):
+    """The session did not become the reader role."""
+
+
+def configure_reader(conn) -> None:
+    """psycopg_pool `configure` callback: SET ROLE reader, read-only, then verify."""
+    conn.execute(f"SET ROLE {READER_ROLE}")
+    conn.execute("SET default_transaction_read_only = on")
+    user = conn.execute("SELECT current_user").fetchone()[0]
+    if user != READER_ROLE:
+        raise NotReaderError(f"session is {user!r}, not {READER_ROLE!r}; refusing to serve")
+    conn.commit()  # the pool needs the connection idle after configure

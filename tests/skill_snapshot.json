@@ -1,0 +1,130 @@
+{
+ "file_sha256": "62adaf3d2715c4282eefe0cd931c00692a7e2fe868c277b8612d455c763dabe0",
+ "sections": [
+  {
+   "title": "FRONTMATTER",
+   "sha256": "e062dfdf31fe1ffc5c64a163d53d9457e6afe7ff27364c27b20b604309afee16",
+   "lines": 4
+  },
+  {
+   "title": "HEAD",
+   "sha256": "6942d7c7bdfec014a00e2c511596673deaf093021a616a21046d2fdf6aa5ca79",
+   "lines": 64
+  },
+  {
+   "title": "Terms",
+   "sha256": "0214efe4fb11afe9d9780a962fff17f1875b4086822fdee71a1cb245f6353049",
+   "lines": 38
+  },
+  {
+   "title": "Interview: the config",
+   "sha256": "814ae4b08a97513add4265b640e8a2a55945aa6108c1ea6d2d9c29bcb97a2458",
+   "lines": 170
+  },
+  {
+   "title": "Step 1: `preflight`",
+   "sha256": "b5ea11ed5566ee9b75c7ba4e9ceba7cad05fc04bad04bc742ee35575122cdcf3",
+   "lines": 49
+  },
+  {
+   "title": "Step 2: `profile`",
+   "sha256": "f3ee0545b1f1af49a95c0cf335532032c80ebac3b459c17097828b548c79722f",
+   "lines": 67
+  },
+  {
+   "title": "Step 3: `propose`",
+   "sha256": "9098ea89d972fab922a6ff58ca02bd77568103eba7e349f7e2438de71f359184",
+   "lines": 30
+  },
+  {
+   "title": "Step 4: `privacy`",
+   "sha256": "e5c0a285e119c545f13e4e062cc4dc97b44d7cf3bd3d5c46e00605d838cb43c1",
+   "lines": 95
+  },
+  {
+   "title": "Step 5: `build`",
+   "sha256": "b0667c8d7a79a8e81b4a57202bdd28e834cf9010a205ccd5ad01cc1d565479b1",
+   "lines": 31
+  },
+  {
+   "title": "Step 6: `enrich`",
+   "sha256": "128ab5a98ddfda95dbcc8dbff2ee56664140616dc4f717e30fb441f7ad639697",
+   "lines": 41
+  },
+  {
+   "title": "Step 7: `provision`",
+   "sha256": "904485c45b0457af812b0662f5dc5dd50ef15423cec6db9ea17e7f306d717589",
+   "lines": 36
+  },
+  {
+   "title": "Step 8: `advise`",
+   "sha256": "db2089595f3e862e4864b65efc44e41e217e1e343ad5aa7f8b060033a12c5945",
+   "lines": 27
+  },
+  {
+   "title": "Step 9: `switch`",
+   "sha256": "65090c6dab796b920dc098ee5161925ed4d9bfb431dd8d32c10995ee378d7d7f",
+   "lines": 19
+  },
+  {
+   "title": "Measure the served graph",
+   "sha256": "0633688561a096d7ccdd5cb85edfb044205dcc8cf61370ddd46d9cc6195fe683",
+   "lines": 39
+  },
+  {
+   "title": "Step 10: `walks`",
+   "sha256": "42a7e075dea845c18614daad19bbce1da618d98451c1c8733beaaf50e371fea6",
+   "lines": 78
+  },
+  {
+   "title": "Step 11: `app` (app developers and architects only)",
+   "sha256": "3912886e0da8ea3bc3b0784d6da6b502e6429a2363e09bc63aa009760b9498ff",
+   "lines": 40
+  },
+  {
+   "title": "Step 12: `notebook` (data engineers)",
+   "sha256": "36309dbac66662288cea0188fe65eb29561a8652f5cd8fa06e73936bcd7f6a57",
+   "lines": 18
+  },
+  {
+   "title": "Nightly refresh",
+   "sha256": "f995b96c0c1bd8b5a523531acab6ea70dde79177df37f7a9ed616069d8547203",
+   "lines": 99
+  },
+  {
+   "title": "Export: `lgk.export:export(config)` (a bundle that provisions as a service principal)",
+   "sha256": "8ba9825b880ead52bc3781dc6579b80fff336f8b32e0554b15641cecaec4615f",
+   "lines": 50
+  },
+  {
+   "title": "Serve a new version",
+   "sha256": "b5ef215c1c77cd3ae04723ddbd51fbba44e4f2ad836c4cf08244dfbb9e68e3dd",
+   "lines": 18
+  },
+  {
+   "title": "Roll back to an earlier version: `lgk.steps.switch:rollback(config, version)`",
+   "sha256": "1e23cfae5f8224c4f7e022e119f9e91e183baf44383afb3c2cd965ce80f88dc7",
+   "lines": 45
+  },
+  {
+   "title": "Retire an old version: `lgk.steps.retire:retire(config, version, confirm_graph_name)`",
+   "sha256": "4b802739877b90eedebb13e224ed0d903f176bd60beda7e757924f4b5d6aac68",
+   "lines": 21
+  },
+  {
+   "title": "Step 13: `teardown`",
+   "sha256": "70c51793b84bf9a33ff4ea7c3c5b2063224b7f25637fc61166ca8d76408a916b",
+   "lines": 31
+  },
+  {
+   "title": "Reap what a deleted branch left: `lgk.reaper:reap(config, confirm_graph_name)`",
+   "sha256": "b3ea8fe52278557808c13cf6c08c83d20ae86a9fee63bb59b66dfe73ff9df873",
+   "lines": 21
+  },
+  {
+   "title": "Completion",
+   "sha256": "a21a5d62906388f791c7811fcb103e87e2489567660bd5272112549ae79b44e1",
+   "lines": 15
+  }
+ ]
+}

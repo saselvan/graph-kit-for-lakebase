@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph search</title>
+<style>
+  :root { --ink: #1b1f24; --muted: #5b6470; --line: #d9dde2; --ground: #f7f8f9; }
+  body { font: 16px/1.5 system-ui, sans-serif; color: var(--ink); background: var(--ground); margin: 0; }
+  main { max-width: 860px; margin: 48px auto; padding: 0 24px; }
+  h1 { font-size: 24px; font-weight: 600; margin: 0 0 24px; }
+  form { display: flex; gap: 8px; margin-bottom: 24px; }
+  input { flex: 1; padding: 8px 12px; font: inherit; border: 1px solid var(--line); border-radius: 6px; }
+  button { padding: 8px 16px; font: inherit; border: 1px solid var(--ink); background: var(--ink); color: #fff; border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; color: var(--muted); }
+  #status { color: var(--muted); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Graph search</h1>
+  <form id="search">
+    <input id="start" placeholder="Start key" required>
+    <input id="type" placeholder="Node type (optional)">
+    <button type="submit">Walk</button>
+  </form>
+  <div id="status"></div>
+  <table>
+    <thead><tr><th>Hop</th><th>Label</th><th>Type</th><th>Key</th><th>Support</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</main>
+<script>
+  const form = document.getElementById("search");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const params = new URLSearchParams({ start: document.getElementById("start").value });
+    const type = document.getElementById("type").value;
+    if (type) params.set("type", type);
+    const status = document.getElementById("status");
+    const body = document.getElementById("rows");
+    body.replaceChildren();
+    const response = await fetch("/api/walk?" + params.toString());
+    const data = await response.json();
+    if (!response.ok) { status.textContent = data.detail; return; }
+    status.textContent = data.rows.length + " nodes";
+    for (const row of data.rows) {
+      const tr = document.createElement("tr");
+      for (const value of [row.hop, row.label, row.node_type, row.natural_key, row.support]) {
+        const td = document.createElement("td");
+        td.textContent = value === null ? "" : String(value);
+        tr.appendChild(td);
+      }
+      body.appendChild(tr);
+    }
+  });
+</script>
+</body>
+</html>

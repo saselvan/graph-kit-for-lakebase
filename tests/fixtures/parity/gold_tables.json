@@ -1,0 +1,8 @@
+{
+  "tables": [
+    {"name": "providers", "key_columns": ["provider_id"]},
+    {"name": "patients", "key_columns": ["patient_id"]},
+    {"name": "claims", "key_columns": ["claim_id", "line_no"]},
+    {"name": "audit_log", "key_columns": []}
+  ]
+}

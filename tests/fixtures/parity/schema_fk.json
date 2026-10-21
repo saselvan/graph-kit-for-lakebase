@@ -1,0 +1,7 @@
+{
+  "tables": [
+    {"name": "a", "key_columns": ["a_id"], "foreign_keys": [{"columns": ["b_id"], "references": ["b", "b_id"]}, {"columns": ["b_id"], "references": ["b", "b_id"]}]},
+    {"name": "b", "key_columns": ["b_id"], "foreign_keys": [{"columns": ["c_id"], "references": ["c", "c_id"]}]},
+    {"name": "c", "key_columns": ["c_id"], "foreign_keys": [{"columns": ["a_id"], "references": ["a", "a_id"]}]}
+  ]
+}

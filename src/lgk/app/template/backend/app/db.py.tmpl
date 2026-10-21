@@ -1,0 +1,81 @@
+"""Lakebase connection pool: psycopg3, sync, OAuth token per connection.
+
+Every connection gets a fresh database credential for ENDPOINT_NAME
+(projects/<p>/branches/<b>/endpoints/<e>), so token rotation is automatic. Connections are
+recycled after 45 minutes (max_lifetime=2700), before the 1-hour token expires. The pool is
+created closed and opened in the FastAPI lifespan.
+
+Every walk runs in its own transaction that starts with `SET LOCAL statement_timeout = '5s'`
+(walk_session): a walk that runs longer is cancelled by Postgres, and the limit ends with the
+transaction, so no other statement on the pooled connection inherits it.
+"""
+
+import os
+from contextlib import contextmanager
+
+import psycopg
+
+from .reader import configure_reader
+
+_workspace = None
+
+
+def _workspace_client():
+    """One WorkspaceClient per process (Apps: the app's service principal from the env)."""
+    global _workspace
+    if _workspace is None:
+        from databricks.sdk import WorkspaceClient
+
+        _workspace = WorkspaceClient()
+    return _workspace
+
+
+class OAuthConnection(psycopg.Connection):
+    """A psycopg connection whose password is a fresh Lakebase database credential."""
+
+    @classmethod
+    def connect(cls, conninfo: str = "", **kwargs):
+        credential = _workspace_client().postgres.generate_database_credential(
+            endpoint=os.environ["ENDPOINT_NAME"]
+        )
+        kwargs["password"] = credential.token
+        return super().connect(conninfo, **kwargs)
+
+
+def conninfo() -> str:
+    """Connection string from the app.yaml env (PGUSER empty: the app's own client id)."""
+    user = os.environ.get("PGUSER") or os.environ["DATABRICKS_CLIENT_ID"]
+    return psycopg.conninfo.make_conninfo(
+        host=os.environ["PGHOST"],
+        port=os.environ.get("PGPORT", "5432"),
+        dbname=os.environ.get("PGDATABASE", "databricks_postgres"),
+        user=user,
+        sslmode=os.environ.get("PGSSLMODE", "require"),
+    )
+
+
+def make_pool():
+    """The app's pool: closed until the lifespan opens it; every connection is `reader`."""
+    from psycopg_pool import ConnectionPool
+
+    return ConnectionPool(
+        conninfo=conninfo(),
+        connection_class=OAuthConnection,
+        min_size=1,
+        max_size=5,
+        max_lifetime=2700,
+        configure=configure_reader,
+        open=False,
+    )
+
+
+@contextmanager
+def walk_session(pool):
+    """A pooled connection for one walk: its transaction gets a 5 s statement timeout first.
+
+    psycopg opens the transaction at the first statement and the pool commits (or rolls back)
+    when the block ends, so SET LOCAL covers exactly this walk's queries.
+    """
+    with pool.connection() as conn:
+        conn.execute("SET LOCAL statement_timeout = '5s'")
+        yield conn
